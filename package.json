@@ -1,7 +1,7 @@
 {
   "name": "local-react-redux-saga",
   "description": "Adds local sagas to local React container components created by local-redux-redux, using redux-saga.",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "main": "lib/index.js",
   "files": [
     "lib",
