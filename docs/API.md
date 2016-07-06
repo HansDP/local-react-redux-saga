@@ -35,7 +35,7 @@ const storeFactory = compose(
 Enhances a [`local-react-redux` container](https://github.com/HansDP/local-react-redux) to run isolated 
 [`Sagas` (redux-saga)](https://github.com/yelouafi/redux-saga).
 
-This method creates a higher-order component for a `container`/
+This method creates a higher-order component for a `connectContainer`/
 
 #### Arguments
 
@@ -50,7 +50,7 @@ This method creates a higher-order component for a `container`/
 ```javascript
 import React from 'react'
 import { compose } from 'redux'
-import { container } from 'local-react-redux'
+import { connectContainer } from 'local-react-redux'
 import sagaContainer from 'local-react-redux-saga'
 
 import localReducer from './reducer'
@@ -60,9 +60,9 @@ const createSaga = () => {
   return rootSaga()
 }
 
-const containerWithMiddleware = compose(sagaContainer(createSaga))(container)
+const createContainerWithMiddleware = compose(sagaContainer(createSaga))(connectContainer)
 
-export default containerWithMiddleware(localReducer)(({ runSaga, dispatch }) => (
+export default createContainerWithMiddleware(localReducer)(({ runSaga, dispatch }) => (
   <div>My container</div>
 ))
 ```
@@ -77,16 +77,16 @@ It is your responsability to `cancel()` those sagas (e.g. on unmount of your com
 ```javascript
 import React from 'react'
 import { compose } from 'redux'
-import { container } from 'local-react-redux'
+import { connectContainer } from 'local-react-redux'
 import sagaContainer from 'local-react-redux-saga'
 
 import localReducer from './reducer'
 import saga1 from './saga1'
 import saga2 from './saga2'
 
-const containerWithMiddleware = compose(sagaContainer())(container)
+const createContainerWithMiddleware = compose(sagaContainer())(connectContainer)
 
-export default containerWithMiddleware(localReducer)(class MyContainer extends React.Component {
+export default createContainerWithMiddleware(localReducer)(class MyContainer extends React.Component {
 
   componentWillMount() {
     const { runSaga } = this.props
