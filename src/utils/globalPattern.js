@@ -1,4 +1,4 @@
-import pattern from './utils/pattern'
+import pattern from './pattern'
 
 /**
 * Creates a pattern (to be used as pattern argument of [takeEvery](http://yelouafi.github.io/redux-saga/docs/api/index.html#takeeverypattern-saga-args) or [takeLatest](http://yelouafi.github.io/redux-saga/docs/api/index.html#takelatestpattern-saga-args))
