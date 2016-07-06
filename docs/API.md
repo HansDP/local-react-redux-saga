@@ -67,10 +67,48 @@ These utils are available from the `utils` folder within the package
 ##### Example
 
 ```javascript
-import { putGlobal } from 'local-react-redux-saga/utils'
+import { putGlobal, selectGlobal, local, global } from 'local-react-redux-saga/utils'
 ```
 
-#### Redux-saga patterns
+#### `putGlobal([channel], action)`
+
+Creates an effect description that instructs the middleware to dispatch a global action to the store.
+
+##### Arguments
+
+* [`channel`] \(*Channel*): Optional parameter that instructs the putGlobal to put the action on the 
+  provided [channel](http://yelouafi.github.io/redux-saga/docs/api/index.html#channel).
+* `action` (*Object*): The redux action to dispatch.
+
+#### `selectGlobal(selector, ...args)`
+
+Creates an effect that instructs the middleware to invoke the provided selector on the global redux 
+store's state (i.e. returns the result of `selector(store.getState(), ...args)`).
+
+If selectGlobal is called without argument (i.e. `yield selectGlobal()`) then the effect is resolved 
+with the entire state (the same result of a `store.getState()` call).
+
+> It's important to note that when an action is dispatched to the store, the middleware first 
+  forwards the action to the reducers and then notifies the Sagas. This means that when you 
+  query the global redux store's state, you get the state after the action has been applied.
+
+
+**Note:** Preferably, a Saga should be autonomous and should not depend on the global redux 
+store's state. This makes it easy to modify the state implementation without affecting the 
+Saga code. A saga should preferably depend only on its own internal control state when 
+possible. But sometimes, one could find it more convenient for a Saga to query the state 
+instead of maintaining the needed data by itself (for example, when a Saga duplicates the 
+logic of invoking some reducer to compute a state that was already computed by the store).
+
+##### Arguments
+
+* `selector` (*Function*): A function of signature `(state, ...args) => args`. It takes the 
+  current global store's state and optionally some arguments and returns a slice of the 
+  global redux store's state
+* [`...args`] \(*...object*):  Optional arguments to be passed to the selector.
+
+
+### Redux-saga patterns
 
 In `redux-saga`, when creating an effect description that instructs the middleware to wait for a specified action on the store (e.g. [takeEvery](http://yelouafi.github.io/redux-saga/docs/api/index.html#takeeverypattern-saga-args) or [takeLatest](http://yelouafi.github.io/redux-saga/docs/api/index.html#takelatestpattern-saga-args)), you pass in a pattern.
 
@@ -121,41 +159,3 @@ The pattern argument of `global(pattern)` and `local(pattern)` is interpreted us
 * If it is an array, action.type is matched against all items in the array (e.g.
   `takeEvery(local(['INCREMENT', 'DECREMENT']))` will match either actions of type 'INCREMENT' or 
   'DECREMENT').
-
-#### `putGlobal([channel], action)`
-
-Creates an effect description that instructs the middleware to dispatch a global action to the store.
-
-##### Arguments
-
-* [`channel`] \(*Channel*): Optional parameter that instructs the putGlobal to put the action on the 
-  provided [channel](http://yelouafi.github.io/redux-saga/docs/api/index.html#channel).
-* `action` (*Object*): The redux action to dispatch.
-
-#### `selectGlobal(selector, ...args)`
-
-Creates an effect that instructs the middleware to invoke the provided selector on the global redux 
-store's state (i.e. returns the result of `selector(store.getState(), ...args)`).
-
-If selectGlobal is called without argument (i.e. `yield selectGlobal()`) then the effect is resolved 
-with the entire state (the same result of a `store.getState()` call).
-
-> It's important to note that when an action is dispatched to the store, the middleware first 
-  forwards the action to the reducers and then notifies the Sagas. This means that when you 
-  query the global redux store's state, you get the state after the action has been applied.
-
-
-**Note:** Preferably, a Saga should be autonomous and should not depend on the global redux 
-store's state. This makes it easy to modify the state implementation without affecting the 
-Saga code. A saga should preferably depend only on its own internal control state when 
-possible. But sometimes, one could find it more convenient for a Saga to query the state 
-instead of maintaining the needed data by itself (for example, when a Saga duplicates the 
-logic of invoking some reducer to compute a state that was already computed by the store).
-
-##### Arguments
-
-* `selector` (*Function*): A function of signature `(state, ...args) => args`. It takes the 
-  current global store's state and optionally some arguments and returns a slice of the 
-  global redux store's state
-* [`...args`] \(*...object*):  Optional arguments to be passed to the selector.
-
