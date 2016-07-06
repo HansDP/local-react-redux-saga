@@ -1,4 +1,5 @@
 import { put } from 'redux-saga/effects'
+import { ACTION_IGNORE_LOCAL, ACTION_DISPATCH_GLOBAL, META_GLOBAL_ACTION } from '../constants'
 
 /**
 * Creates an effect description that instructs the middleware to dispatch a global 
@@ -25,13 +26,13 @@ export default (...args) => {
 const createGlobalAction = (action) => {
 
 	// The middleware contains a special case:
-	// 		When the action has a globalType = '@@LOCAL_REDUX_SAGA_DISPATCH_GLOBAL', 
-	// 		then the wrapped action in the meta-dat 'GLOBAL_ACTION' will be dispatched instead
+	// 		When the action has a globalType = ACTION_DISPATCH_GLOBAL, 
+	// 		then the wrapped action in the meta-data META_GLOBAL_ACTION will be dispatched instead
 	return { 
-		type: '@@LOCAL_REDUX_SAGA', 
-		globalType: '@@LOCAL_REDUX_SAGA_DISPATCH_GLOBAL', 
+		type: ACTION_IGNORE_LOCAL, 
+		globalType: ACTION_DISPATCH_GLOBAL, 
 		meta: {
-			'GLOBAL_ACTION': action
+			[META_GLOBAL_ACTION]: action
 		}
 	}
 

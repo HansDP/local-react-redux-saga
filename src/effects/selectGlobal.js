@@ -1,5 +1,6 @@
 import warning from 'warning'
 import { select, put } from 'redux-saga/effects'
+import { ACTION_IGNORE_LOCAL, ACTION_GET_GLOBAL_STATE } from '../constants'
 
 /**
 * Creates an effect that instructs the middleware to invoke the provided selector 
@@ -28,18 +29,18 @@ import { select, put } from 'redux-saga/effects'
 export default function* selectGlobal(selector, ...args) {	
 
 	// Use the middleware to get the action store-state
-	// In the middleware, if the action has a property globalType = '@@LOCAL_REDUX_SAGA_GET_STATE', then the middleware
+	// In the middleware, if the action has a property globalType = ACTION_GET_GLOBAL_STATE, then the middleware
 	// will return the global state.
 	const globlState = yield put({ 
-		type: '@@LOCAL_REDUX_SAGA', 
-		globalType: '@@LOCAL_REDUX_SAGA_GET_STATE' 
+		type: ACTION_IGNORE_LOCAL, 
+		globalType: ACTION_GET_GLOBAL_STATE 
 	})
 
 	warning(globlState, 'Could not determine global state. Ensure that ' + 
-						'localSagaMiddleware is applied to your redux store. ' +
+						'sagaContainerMiddleware is applied to your redux store. ' +
 						'If it has been applied, this problem most likely occurs ' +
 						'due to some other midleware that does not return the value ' +
-						'of its next() middleware. Try putting localSagaMiddleware as ' +
+						'of its next() middleware. Try putting sagaContainerMiddleware as ' +
 						'the first middleware in the list')
 	
 	// TODO: is this correct implementation? maybe should return a promise?

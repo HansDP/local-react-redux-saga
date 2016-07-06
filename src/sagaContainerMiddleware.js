@@ -1,4 +1,5 @@
 import { runSaga } from 'redux-saga'
+import { ACTION_RUN_SAGA, ACTION_GET_GLOBAL_STATE, ACTION_DISPATCH_GLOBAL, META_RUN_SAGA, META_GLOBAL_ACTION } from './constants'
 
 /**
 * Creates a redux middleware and connects the local sagas to the redux store
@@ -71,18 +72,20 @@ export default (options = {}) => (store) => {
 
 		// TODO: the full-key thingie can be solved by using a local dispatch instead
 
-		if (type === '@@LOCAL_REDUX_SAGA_RUN') {
-			const { fullKey, dispatch: localDispatch, getState: getLocalState, saga } = action.meta.LOCAL_REDUX_SAGA
-			return beginSaga(saga, localDispatch, getLocalState, fullKey)
+		if (type === ACTION_RUN_SAGA) {
+			const { fullKey, dispatch: localDispatch, getState: getLocalState, saga } = action.meta[META_RUN_SAGA]
+			return {
+				saga: beginSaga(saga, localDispatch, getLocalState, fullKey)
+			}
 		}
 
 		const { globalType } = action
 		if (globalType) {
-			if (globalType === '@@LOCAL_REDUX_SAGA_GET_STATE') {
+			if (globalType === ACTION_GET_GLOBAL_STATE) {
 				return store.getState()
 			}
-			if (globalType == '@@LOCAL_REDUX_SAGA_DISPATCH_GLOBAL') {
-				action = action.meta.GLOBAL_ACTION
+			if (globalType == ACTION_DISPATCH_GLOBAL) {
+				action = action.meta[META_GLOBAL_ACTION]
 				// And continue as normal
 			}
 		}
@@ -92,10 +95,3 @@ export default (options = {}) => (store) => {
 		return result
 	}
 }
-
-
-// sagaMiddleware.run = (saga, ...args) => {
-	// 	check(runSagaDynamically, is.notUndef, 'Before running a Saga, you must mount the Saga middleware on the Store using applyMiddleware')
-	// 	check(saga, is.func, 'sagaMiddleware.run(saga, ...args): saga argument must be a Generator function!')
-	// 	return runSagaDynamically(saga, ...args)
-	// }
