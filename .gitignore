@@ -1,0 +1,11 @@
+node_modules
+temp
+lib
+npm-debug.log
+coverage
+_book
+*.bat
+testexample
+.vscode
+.idea
+jsconfig.json
