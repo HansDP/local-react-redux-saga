@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react'
+import warning from 'warning'
 import { ACTION_RUN_SAGA, META_RUN_SAGA } from './constants'
 
 /**
